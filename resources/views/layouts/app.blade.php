@@ -25,52 +25,40 @@
     <div id="app">
         <div id="wrapper">
             @auth
-            <!-- Sidebar -->
-            <nav id="sidebar">
-                <div class="sidebar-header">
-                    <h3 class="mb-0 fw-bold" style="color: var(--kopnus-orange);">KOPNUS<span
-                            class="text-white">.</span></h3>
-                </div>
+                <nav id="sidebar">
+                    <div class="sidebar-header">
+                        <h3 class="mb-0 fw-bold" style="color: var(--kopnus-orange);">KOPNUS<span
+                                class="text-white">.</span></h3>
+                    </div>
+                    <ul class="list-unstyled components">
+                        <li class="{{ Request::is('home') || Request::is('dashboard') ? 'active' : '' }}">
+                            <a href="{{ url('/home') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        </li>
+                        @can('view members')
+                            <li>
+                                <a href="#"><i class="bi bi-people"></i> Member</a>
+                            </li>
+                        @endcan
+                        @can('view approvals')
+                            <li>
+                                <a href="#"><i class="bi bi-hourglass-split"></i> Approval</a>
+                            </li>
+                        @endcan
+                    </ul>
 
-                <ul class="list-unstyled components">
-                    <li class="{{ Request::is('home') || Request::is('dashboard') ? 'active' : '' }}">
-                        <a href="{{ url('/home') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="bi bi-people"></i> Anggota</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="bi bi-cash-coin"></i> Pinjaman</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="bi bi-wallet2"></i> Simpanan</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="bi bi-bar-chart"></i> Laporan</a>
-                    </li>
-                    <li class="mt-4 small px-4 text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Sistem</li>
-                    <li>
-                        <a href="#"><i class="bi bi-gear"></i> Pengaturan</a>
-                    </li>
-                </ul>
-            </nav>
+
+                </nav>
             @endauth
-
-            <!-- Page Content -->
             <div id="content" class="{{ Auth::check() ? '' : 'content-guest' }}">
-
                 <nav class="navbar navbar-expand-lg navbar-dashboard sticky-top">
                     <div class="container-fluid">
                         @auth
-                        <button type="button" id="sidebarCollapse" class="btn btn-light shadow-sm me-3">
-                            <i class="bi bi-list"></i>
-                        </button>
+                            <button type="button" id="sidebarCollapse" class="btn btn-light shadow-sm me-3">
+                                <i class="bi bi-list"></i>
+                            </button>
                         @endauth
-
-
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto align-items-center">
-                                <!-- Authentication Links -->
                                 @guest
                                     @if (Route::has('login'))
                                         <li class="nav-item">
