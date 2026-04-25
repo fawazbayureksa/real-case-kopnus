@@ -35,9 +35,9 @@
                             <a href="{{ url('/home') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
                         </li>
                         @can('view members')
-                            <li>
-                                <a href="#"><i class="bi bi-people"></i> Member</a>
-                            </li>
+                        <li class="{{ Request::is('members') ? 'active' : '' }}">
+                            <a href="{{ route('members.index') }}"><i class="bi bi-people"></i> Member</a>
+                        </li>
                         @endcan
                         @can('view approvals')
                             <li>
