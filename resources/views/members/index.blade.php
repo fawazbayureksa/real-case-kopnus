@@ -111,16 +111,14 @@
                                         <td class="text-muted small">{{ $member->created_at->format('d M Y, H:i') }}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <button
-                                                    class="btn btn-sm btn-outline-secondary px-3 rounded-pill">Detail</button>
-                                                @can('manage members')
-                                                    <button
-                                                        class="btn btn-sm btn-outline-primary px-3 rounded-pill">Ubah</button>
-                                                    <button
-                                                        class="btn btn-sm btn-outline-danger px-3 rounded-pill">Hapus</button>
-                                                @endcan
+                                                <form action="{{ route('members.destroy', $member->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus member ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-pill">Hapus</button>
+                                                </form>
                                             </div>
                                         </td>
+
                                     </tr>
                                 @empty
                                     <tr>
