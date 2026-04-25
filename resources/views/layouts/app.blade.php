@@ -44,6 +44,11 @@
                                 <a href="#"><i class="bi bi-hourglass-split"></i> Approval</a>
                             </li>
                         @endcan
+                        <li class="{{ Request::is('transactions') ? 'active' : '' }}">
+                            <a href="{{ route('transactions.index') }}"><i class="bi bi-receipt"></i> Transaction</a>
+                        </li>
+
+                        
                     </ul>
 
 
@@ -128,6 +133,8 @@
             }
         });
     </script>
+    @stack('scripts')
 </body>
+
 
 </html>
