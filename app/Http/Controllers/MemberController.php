@@ -47,6 +47,7 @@ class MemberController extends Controller
         ]);
 
         $file = $request->file('file');
+        dd($file);
         $filename = time() . '_' . $file->getClientOriginalName();
         $path = $file->storeAs('imports', $filename);
 
