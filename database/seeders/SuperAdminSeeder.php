@@ -11,19 +11,19 @@ class SuperAdminSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ensure the admin role exists
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-
-        // Create the Super Admin user
-        $user = User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'superadmin@mail.com'],
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('12345678'),
             ]
         );
-
-        // Assign the role
-        $user->assignRole($adminRole);
+        $user = User::updateOrCreate(
+            ['email' => 'user@mail.com'],
+            [
+                'name' => 'user',
+                'password' => Hash::make('12345678'),
+            ]
+        );
     }
 }
