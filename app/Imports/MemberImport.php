@@ -39,7 +39,7 @@ class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
 
     public function model(array $row)
     {
-        DB::table('member_imports')->where('id', $this->memberImportId)->increment('total_success');
+        DB::table('upload_logs')->where('id', $this->memberImportId)->increment('total_success');
 
         return new Member([
             'member_number' => $row['no_anggota'],
@@ -85,7 +85,7 @@ class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
                 'updated_at'       => now(),
             ]);
 
-            DB::table('member_imports')->where('id', $this->memberImportId)->increment('total_failed');
+            DB::table('upload_logs')->where('id', $this->memberImportId)->increment('total_failed');
         }
     }
 
@@ -93,12 +93,12 @@ class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
     {
         return [
             AfterImport::class => function(AfterImport $event) {
-                DB::table('member_imports')->where('id', $this->memberImportId)->update([
+                DB::table('upload_logs')->where('id', $this->memberImportId)->update([
                     'status' => 'completed',
                 ]);
             },
             ImportFailed::class => function(ImportFailed $event) {
-                DB::table('member_imports')->where('id', $this->memberImportId)->update([
+                DB::table('upload_logs')->where('id', $this->memberImportId)->update([
                     'status' => 'failed',
                 ]);
             },

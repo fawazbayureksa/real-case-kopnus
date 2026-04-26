@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('member_imports', function (Blueprint $table) {
+        Schema::create('upload_logs', function (Blueprint $table) {
             $table->id();
             $table->string('filename');
             $table->integer('total_data')->default(0);
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('member_imports');
+        Schema::dropIfExists('upload_logs');
     }
 };

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
-use App\Models\MemberImport as MemberImportModel;
 use App\Imports\MemberImport;
+use App\Models\Member;
+use App\Models\UploadLog as ModelsUploadLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,7 +15,7 @@ class MemberController extends Controller
     public function index()
     {
         $members = Member::latest()->paginate(10);
-        $recentUpload = MemberImportModel::latest()->first();
+        $recentUpload = ModelsUploadLog::latest()->first();
         return view('members.index', compact('members', 'recentUpload'));
     }
 
@@ -56,7 +55,7 @@ class MemberController extends Controller
         $path = $file->storeAs('imports', $filename);
 
 
-        $importSession = MemberImportModel::create([
+        $importSession = ModelsUploadLog::create([
             'filename' => $filename,
             'status' => 'processing',
         ]);
@@ -69,7 +68,7 @@ class MemberController extends Controller
 
     public function downloadErrors($id)
     {
-        $importSession = MemberImportModel::findOrFail($id);
+        $importSession = ModelsUploadLog::findOrFail($id);
         $failures = DB::table('member_import_failures')->where('member_import_id', $id)->get();
 
         if ($failures->isEmpty()) {
