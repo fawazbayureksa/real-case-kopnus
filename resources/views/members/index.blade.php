@@ -35,7 +35,7 @@
             @endif
 
             {{-- Bulk Upload Result Section --}}
-            @if ($recentUpload && $recentUpload->updated_at <= now()->addMinutes(15)->format('Y-m-d h:i:s'))
+            @if ($recentUpload && Carbon\Carbon::parse($recentUpload->updated_at)->timestamp >= now()->addMinutes(15)->timestamp)
                 <div class="card border-0 shadow-sm mb-4"
                     style="border-left: 5px solid {{ $recentUpload->status == 'completed' ? '#28a745' : ($recentUpload->status == 'processing' ? '#ffc107' : '#dc3545') }};">
                     <div class="card-body">
