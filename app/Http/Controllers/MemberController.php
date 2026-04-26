@@ -42,22 +42,26 @@ class MemberController extends Controller
 
     public function import(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:csv,xlsx,xls|max:51200', // 50MB
-        ]);
+        try {
+            $request->validate([
+                'file' => 'required|mimes:csv,xlsx,xls|max:51200', // 50MB
+            ]);
+        }
+        catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Member gagal ditambahkan.' . $e->getMessage());
+        }
 
         $file = $request->file('file');
-        dd($file);
         $filename = time() . '_' . $file->getClientOriginalName();
         $path = $file->storeAs('imports', $filename);
 
-        // Create tracking record
+
         $importSession = MemberImportModel::create([
             'filename' => $filename,
             'status' => 'processing',
         ]);
 
-        // Dispatch import
+
         Excel::queueImport(new MemberImport($importSession->id), $path);
 
         return redirect()->back()->with('success', 'Upload data sedang diproses.');

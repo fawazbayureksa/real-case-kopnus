@@ -35,7 +35,7 @@
             @endif
 
             {{-- Bulk Upload Result Section --}}
-            @if ($recentUpload && Carbon\Carbon::parse($recentUpload->updated_at)->timestamp >= now()->addMinutes(15)->timestamp)
+            @if ($recentUpload && Carbon\Carbon::parse($recentUpload->updated_at)->timestamp <= now()->addMinutes(15)->timestamp)
                 <div class="card border-0 shadow-sm mb-4"
                     style="border-left: 5px solid {{ $recentUpload->status == 'completed' ? '#28a745' : ($recentUpload->status == 'processing' ? '#ffc107' : '#dc3545') }};">
                     <div class="card-body">
@@ -112,58 +112,85 @@
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">
                                                 @if (!$member->is_active)
-                                                    <button type="button" class="btn btn-sm btn-success px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#statusModal{{ $member->id }}">
+                                                    <button type="button" class="btn btn-sm btn-success px-3 rounded-pill"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#statusModal{{ $member->id }}">
                                                         Approval
                                                     </button>
                                                 @endif
-                                                <form action="{{ route('members.destroy', $member->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus member ini?')">
+                                                <form action="{{ route('members.destroy', $member->id) }}" method="POST"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus member ini?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-pill">Hapus</button>
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger px-3 rounded-pill">Hapus</button>
                                                 </form>
                                             </div>
 
                                             {{-- Status Update Modal --}}
                                             @if (!$member->is_active)
-                                            <div class="modal fade" id="statusModal{{ $member->id }}" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content border-0 shadow">
-                                                        <div class="modal-header border-0 pb-0">
-                                                            <h5 class="modal-title fw-bold">Konfirmasi Approval</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <form action="{{ route('members.update-status', $member->id) }}" method="POST">
-                                                            @csrf
-                                                            <div class="modal-body py-4 text-start">
-                                                                <p class="mb-3">Tentukan tindakan untuk member: <strong>{{ $member->name }}</strong></p>
-                                                                
-                                                                <div class="mb-3">
-                                                                    <label class="info-label">Pilih Status</label>
-                                                                    <div class="d-flex gap-3 mt-2">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="status" id="approve{{ $member->id }}" value="1" checked>
-                                                                            <label class="form-check-label text-success fw-bold" for="approve{{ $member->id }}">APPROVE (Aktifkan)</label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" name="status" id="reject{{ $member->id }}" value="0">
-                                                                            <label class="form-check-label text-danger fw-bold" for="reject{{ $member->id }}">REJECT (Tetap Inaktif)</label>
+                                                <div class="modal fade" id="statusModal{{ $member->id }}" tabindex="-1"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0 shadow">
+                                                            <div class="modal-header border-0 pb-0">
+                                                                <h5 class="modal-title fw-bold">Konfirmasi Approval</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form
+                                                                action="{{ route('members.update-status', $member->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="modal-body py-4 text-start">
+                                                                    <p class="mb-3">Tentukan tindakan untuk member:
+                                                                        <strong>{{ $member->name }}</strong></p>
+
+                                                                    <div class="mb-3">
+                                                                        <label class="info-label">Pilih Status</label>
+                                                                        <div class="d-flex gap-3 mt-2">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="status"
+                                                                                    id="approve{{ $member->id }}"
+                                                                                    value="1" checked>
+                                                                                <label
+                                                                                    class="form-check-label text-success fw-bold"
+                                                                                    for="approve{{ $member->id }}">APPROVE
+                                                                                    (Aktifkan)</label>
+                                                                            </div>
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="status"
+                                                                                    id="reject{{ $member->id }}"
+                                                                                    value="0">
+                                                                                <label
+                                                                                    class="form-check-label text-danger fw-bold"
+                                                                                    for="reject{{ $member->id }}">REJECT
+                                                                                    (Tetap Inaktif)</label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
 
-                                                                <div class="mb-3">
-                                                                    <label for="note{{ $member->id }}" class="info-label">Catatan (Wajib)</label>
-                                                                    <textarea name="note" id="note{{ $member->id }}" class="form-control" rows="3" placeholder="Masukkan alasan atau catatan..." required></textarea>
+                                                                    <div class="mb-3">
+                                                                        <label for="note{{ $member->id }}"
+                                                                            class="info-label">Catatan (Wajib)</label>
+                                                                        <textarea name="note" id="note{{ $member->id }}" class="form-control" rows="3"
+                                                                            placeholder="Masukkan alasan atau catatan..." required></textarea>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="modal-footer border-0 pt-0 pb-4 justify-content-center">
-                                                                <button type="button" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" data-bs-dismiss="modal">Batal</button>
-                                                                <button type="submit" class="btn btn-primary px-5 rounded-pill fw-bold">Simpan</button>
-                                                            </div>
-                                                        </form>
+                                                                <div
+                                                                    class="modal-footer border-0 pt-0 pb-4 justify-content-center">
+                                                                    <button type="button"
+                                                                        class="btn btn-light rounded-pill px-4 fw-bold shadow-sm"
+                                                                        data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary px-5 rounded-pill fw-bold">Simpan</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                             @endif
 
                                         </td>
