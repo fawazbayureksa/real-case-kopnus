@@ -59,7 +59,7 @@ class MemberController extends Controller
         // Dispatch import
         Excel::queueImport(new MemberImport($importSession->id), $path);
 
-        return redirect()->back()->with('success', 'Upload data sedang diproses di latar belakang.');
+        return redirect()->back()->with('success', 'Upload data sedang diproses.');
     }
 
     public function downloadErrors($id)
@@ -73,7 +73,7 @@ class MemberController extends Controller
 
         $filename = 'errors_' . $importSession->filename . '.csv';
         $handle = fopen('php://output', 'w');
-        
+
         // Header
         fputcsv($handle, ['no_anggota', 'name', 'is_active', 'note'], '|');
 
@@ -97,4 +97,12 @@ class MemberController extends Controller
             ]
         );
     }
+    public function destroy($id)
+    {
+        $member = Member::findOrFail($id);
+        $member->delete();
+
+        return redirect()->back()->with('success', 'Member berhasil dihapus.');
+    }
 }
+

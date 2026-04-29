@@ -8,5 +8,11 @@ class Member extends Model
 {
     protected $table = 'member';
     protected $guarded = ['id'];
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'member_id');
+    }
 }
+
 
