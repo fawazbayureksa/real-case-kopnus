@@ -27,8 +27,7 @@
             @auth
                 <nav id="sidebar">
                     <div class="sidebar-header">
-                        <h3 class="mb-0 fw-bold" style="color: var(--kopnus-orange);">KOPNUS<span
-                                class="text-white">.</span></h3>
+                        <h3 class="mb-0 fw-bold" style="color: var(--kopnus-orange);">KOPNUS</h3>
                     </div>
                     <ul class="list-unstyled components">
                         <li class="{{ Request::is('home') || Request::is('dashboard') ? 'active' : '' }}">
@@ -40,15 +39,15 @@
                         </li>
                         @endcan
                         @can('view approvals')
-                            <li>
-                                <a href="#"><i class="bi bi-hourglass-split"></i> Approval</a>
+                            <li class="{{ Request::is('admin/approval-history') ? 'active' : '' }}">
+                                <a href="{{ route('approval.index') }}"><i class="bi bi-hourglass-split"></i> Approval History</a>
                             </li>
                         @endcan
-                        <li class="{{ Request::is('transactions') ? 'active' : '' }}">
-                            <a href="{{ route('transactions.index') }}"><i class="bi bi-receipt"></i> Transaction</a>
-                        </li>
-
-                        
+                        @can('view transactions')
+                            <li class="{{ Request::is('transactions') ? 'active' : '' }}">
+                                <a href="{{ route('transactions.index') }}"><i class="bi bi-receipt"></i> Transaction</a>
+                            </li>
+                        @endcan
                     </ul>
 
 

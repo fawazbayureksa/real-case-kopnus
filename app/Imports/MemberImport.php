@@ -3,8 +3,6 @@
 namespace App\Imports;
 
 use App\Models\Member;
-use App\Models\MemberImport as MemberImportModel;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
@@ -19,8 +17,10 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Events\ImportFailed;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithUpsertColumns;
 
-class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithUpserts, SkipsOnFailure, WithValidation, ShouldQueue, WithEvents
+class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading, WithUpserts, SkipsOnFailure, WithValidation, ShouldQueue, WithEvents, WithCalculatedFormulas, WithUpsertColumns
 {
     use Importable;
 
@@ -31,10 +31,15 @@ class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
         $this->memberImportId = $memberImportId;
     }
 
+    public function upsertColumns()
+    {
+        return ['name', 'is_active', 'updated_at'];
+    }
+
+
     public function model(array $row)
     {
-        // Increment success count
-        DB::table('member_imports')->where('id', $this->memberImportId)->increment('total_success');
+        DB::table('upload_logs')->where('id', $this->memberImportId)->increment('total_success');
 
         return new Member([
             'member_number' => $row['no_anggota'],
@@ -80,7 +85,7 @@ class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
                 'updated_at'       => now(),
             ]);
 
-            DB::table('member_imports')->where('id', $this->memberImportId)->increment('total_failed');
+            DB::table('upload_logs')->where('id', $this->memberImportId)->increment('total_failed');
         }
     }
 
@@ -88,12 +93,12 @@ class MemberImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
     {
         return [
             AfterImport::class => function(AfterImport $event) {
-                DB::table('member_imports')->where('id', $this->memberImportId)->update([
+                DB::table('upload_logs')->where('id', $this->memberImportId)->update([
                     'status' => 'completed',
                 ]);
             },
             ImportFailed::class => function(ImportFailed $event) {
-                DB::table('member_imports')->where('id', $this->memberImportId)->update([
+                DB::table('upload_logs')->where('id', $this->memberImportId)->update([
                     'status' => 'failed',
                 ]);
             },

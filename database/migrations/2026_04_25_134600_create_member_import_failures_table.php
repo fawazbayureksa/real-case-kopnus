@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('member_import_failures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_import_id')->constrained()->onDelete('cascade');
+            $table->foreignId('upload_log_id')->constrained()->onDelete('cascade');
             $table->string('member_number')->nullable();
             $table->string('name')->nullable();
             $table->string('is_active')->nullable();

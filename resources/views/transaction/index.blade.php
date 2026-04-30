@@ -109,10 +109,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="reference_id" class="info-label">Reference ID</label>
-                            <input type="text" name="reference_id" id="reference_id" class="form-control rounded-pill"
-                                placeholder="Contoh: REF123456" required>
-                            <div class="form-text text-muted small">Reference ID digunakan untuk mencegah duplikasi
-                                transaksi.</div>
+                            <input type="text" name="reference_id" id="reference_id" class="form-control rounded-pill" required>
                         </div>
                         <div class="mb-3">
                             <label for="amount" class="info-label">Jumlah (Amount)</label>

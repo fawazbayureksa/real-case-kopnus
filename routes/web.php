@@ -3,7 +3,9 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\MemberStatusHistoryController;
 use Illuminate\Support\Facades\Auth;
+
 
 
 use Illuminate\Support\Facades\Route;
@@ -15,23 +17,26 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('my-profile', [HomeController::class, 'myProfile'])->name('my-profile');
+    Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('can:view dashboard');
+    Route::get('my-profile', [HomeController::class, 'myProfile'])->name('my-profile')->middleware('can:view profile');
 
     // Admin Only Routes
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-        // Route::get('/members', [AdminController::class, 'members'])->name('admin.members');
-        // Route::get('/approvals', [AdminController::class, 'approvals'])->name('admin.approvals');
         // Member Management
-        Route::get('/members', [MemberController::class, 'index'])->name('members.index');
-        Route::post('/members', [MemberController::class, 'store'])->name('members.store');
-        Route::post('/members/import', [MemberController::class, 'import'])->name('members.import');
-        Route::get('/members/export-errors/{id}', [MemberController::class, 'downloadErrors'])->name('members.export-errors');
-        Route::delete('/members/{id}', [MemberController::class, 'destroy'])->name('members.destroy');
-
+        Route::get('/members', [MemberController::class, 'index'])->name('members.index')->middleware('can:view members');
+        Route::post('/members', [MemberController::class, 'store'])->name('members.store')->middleware('can:manage members');
+        Route::post('/members/import', [MemberController::class, 'import'])->name('members.import')->middleware('can:manage members');
+        Route::get('/members/export-errors/{id}', [MemberController::class, 'downloadErrors'])->name('members.export-errors')->middleware('can:manage members');
+        Route::delete('/members/{id}', [MemberController::class, 'destroy'])->name('members.destroy')->middleware('can:manage members');
 
         // Transaction Management
-        Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-        Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
+        Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index')->middleware('can:view transactions');
+        Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store')->middleware('can:manage transactions');
+
+        // Approval & History
+        Route::get('/approval-history', [MemberStatusHistoryController::class, 'index'])->name('approval.index')->middleware('can:view approvals');
+        Route::post('/members/{id}/status', [MemberStatusHistoryController::class, 'updateStatus'])->name('members.update-status')->middleware('can:manage approvals');
     });
 });
+
+

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MemberImport extends Model
+class UploadLog extends Model
 {
     protected $guarded = ['id'];
 }
