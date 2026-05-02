@@ -37,7 +37,11 @@ class RoleAndPermissionSeeder extends Seeder
             'view profile',
         ]);
 
-        // Assign 
+        $userAccount = User::where('email','user@mail.com')->first();
+        if ($userAccount) {
+            $userAccount->assignRole($userRole);
+        }
+
         $superAdmin = User::where('email', 'superadmin@mail.com')->first();
         if ($superAdmin) {
             $superAdmin->assignRole($adminRole);
